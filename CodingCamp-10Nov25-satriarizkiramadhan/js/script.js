@@ -1,117 +1,42 @@
-// Ambil elemen-elemen dari DOM
-const taskInput = document.getElementById("taskInput");
-const dateInput = document.getElementById("dateInput");
-const addBtn = document.getElementById("addBtn");
-const filterBtn = document.getElementById("filterBtn");
-const deleteAllBtn = document.getElementById("deleteAllBtn");
-const taskTableBody = document.getElementById("taskTableBody");
+let todos = [];
 
-let tasks = [];
-let filterActive = false;
+function addTodo() {
+    const todoinput = document.getElementById("todo-input");
+    const tododate = document.getElementById("todo-date");
 
-// Fungsi untuk menampilkan task pada tabel
-function renderTasks() {
-  taskTableBody.innerHTML = "";
-  
-  // Filter jika tombol filter aktif
-  let displayedTasks = filterActive ? tasks.filter(t => t.status === "Completed") : tasks;
+    /// validation
+    if (todoinput.value === '' || tododate.value === '') {
+        alert("please fill in both fields.");
+    } else {
+        /// add todo item to the list
+        todos.push({ text: todoinput.value, date: tododate.value, });
+        todoinput.value = '';
+        tododate.value = '';
 
-  if (displayedTasks.length === 0) {
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = 4;
-    cell.className = "no-task";
-    cell.textContent = "No task found";
-    row.appendChild(cell);
-    taskTableBody.appendChild(row);
-    return;
-  }
-
-  displayedTasks.forEach((task, index) => {
-    const row = document.createElement("tr");
-
-    // Task Name
-    const taskCell = document.createElement("td");
-    taskCell.textContent = task.name;
-    row.appendChild(taskCell);
-
-    // Due Date
-    const dueDateCell = document.createElement("td");
-    dueDateCell.textContent = task.dueDate;
-    row.appendChild(dueDateCell);
-
-    // Status
-    const statusCell = document.createElement("td");
-    statusCell.textContent = task.status;
-    if (task.status === "Completed") {
-      statusCell.classList.add("status-completed");
-    }
-    row.appendChild(statusCell);
-
-    // Actions
-    const actionCell = document.createElement("td");
-
-    if(task.status !== "Completed"){
-      const completeBtn = document.createElement("button");
-      completeBtn.textContent = "Complete";
-      completeBtn.className = "action-btn";
-      completeBtn.addEventListener("click", () => {
-        tasks[index].status = "Completed";
-        renderTasks();
-      });
-      actionCell.appendChild(completeBtn);
+        randerTodos();
     }
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.className = "action-btn delete";
-    deleteBtn.addEventListener("click", () => {
-      tasks.splice(index, 1);
-      renderTasks();
+}
+function randerTodos() {
+    const todoList = document.getElementById('todo-list');
+
+
+    todoList.innerHTML = '';
+
+    todos.forEach((todo,) => {
+        todoList.innerHTML += `
+        <li>
+            <p class="text-2xl">${todo.text} <span class="text-sm text-grey-500">(${todo.date})</span></p>
+            <hr />
+         </li>`;
     });
-    actionCell.appendChild(deleteBtn);
 
-    row.appendChild(actionCell);
-
-    taskTableBody.appendChild(row);
-  });
 }
 
-// Tambah task baru
-addBtn.addEventListener("click", () => {
-  const name = taskInput.value.trim();
-  const dueDate = dateInput.value;
 
-  if (name === "") {
-    alert("Please enter a task.");
-    return;
-  }
-  
-  if (dueDate === "") {
-    alert("Please select a due date.");
-    return;
-  }
+function cleartodos() {
+    todos = [];
+    randerTodos();
+}
 
-  tasks.push({ name, dueDate, status: "Pending" });
-  taskInput.value = "";
-  dateInput.value = "";
-  renderTasks();
-});
-
-// Filter tombol toggle
-filterBtn.addEventListener("click", () => {
-  filterActive = !filterActive;
-  filterBtn.style.backgroundColor = filterActive ? "#6d8bf6" : "#7b7de7";
-  renderTasks();
-});
-
-// Hapus semua task
-deleteAllBtn.addEventListener("click", () => {
-  if (confirm("Are you sure you want to delete all tasks?")) {
-    tasks = [];
-    renderTasks();
-  }
-});
-
-// Tampilkan task awal (kosong)
-renderTasks();
+function filtertodos() { }
